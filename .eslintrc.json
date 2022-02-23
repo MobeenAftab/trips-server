@@ -8,6 +8,7 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "prettier",
+        "plugin:prettier/recommended",
         "plugin:node/recommended"
     ],
     "parser": "@typescript-eslint/parser",
@@ -17,6 +18,10 @@
     },
     "plugins": ["@typescript-eslint", "prettier"],
     "rules": {
-        "prettier/prettier": ["error"]
+        "prettier/prettier": ["error"],
+        "node/no-unsupported-features/es-syntax": [
+            "error",
+            { "ignores": ["modules"] }
+        ]
     }
 }
