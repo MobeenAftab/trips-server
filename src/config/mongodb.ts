@@ -28,7 +28,8 @@ export const connectToMongodb = () => {
         `\nmongoose client connected, username: ${dbUserName}, dbname: ${dbname} \n`
     );
 
-    // TODO: Add in options object for db conn
+    // TODO: Add in options object for db conn, wrap in try catch
+    // https://mongoosejs.com/docs/connections.html
     mongoose
         .connect(uri)
         .then(() => {
@@ -54,8 +55,9 @@ export const connectToMongodb = () => {
 
     process.on('SIGINT', () => {
         mongoose.connection.close(() => {
-            console.log('mongoose disonected due to app');
-            process.exit(0);
+            mongoose.disconnect();
+            printUsageToStdout();
+            process.exitCode = 1;
         });
     });
 };
@@ -66,3 +68,6 @@ export const disconnectFromMongodb = () => {
     }
     mongoose.disconnect();
 };
+function printUsageToStdout() {
+    throw new Error('mongoose disonected due to app');
+}

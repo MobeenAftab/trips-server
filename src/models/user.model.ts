@@ -33,3 +33,4 @@ const UserSchema: Schema<IUser> = new Schema({
 });
 
 export const UserModel: Model<IUser> = model('User', UserSchema);
+export type UsersModel = Array<typeof UserModel>;

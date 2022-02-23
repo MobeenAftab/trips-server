@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { connectToMongodb } from './config/mongodb';
-
+import router from './routes';
 const dotenvConfig = dotenv.config();
 
 // Check if env variables have imported correctly
@@ -26,12 +26,7 @@ connectToMongodb();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
-
-app.get('/', (req, res) => {
-    res.status(200).json({
-        status: 'success',
-    });
-});
+app.use('/api', router);
 
 app.listen(PORT, () => {
     return console.log(`Express is listening at ${HOST}:${PORT}`);
