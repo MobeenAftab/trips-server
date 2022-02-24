@@ -28,16 +28,19 @@ export const connectToMongodb = () => {
         `\nmongoose client connected, username: ${dbUserName}, dbname: ${dbname} \n`
     );
 
-    // TODO: Add in options object for db conn, wrap in try catch
     // https://mongoosejs.com/docs/connections.html
-    mongoose
-        .connect(uri)
-        .then(() => {
-            console.log('Mongodb Connected\n');
-        })
-        .catch((err) => {
-            console.warn(err);
-        });
+    try {
+        mongoose
+            .connect(uri)
+            .then(() => {
+                console.log('Mongodb Connected\n');
+            })
+            .catch((error) => {
+                throw new Error(`Mongodb connection error \n ${error}`);
+            });
+    } catch (error) {
+        throw new Error(`Mongodb connection error \n ${error}`);
+    }
 
     dbClient = mongoose.connection;
 
@@ -45,8 +48,8 @@ export const connectToMongodb = () => {
         console.log('mongoose connected to db');
     });
 
-    mongoose.connection.on('error', (err) => {
-        console.warn('mongoose error:\n' + err);
+    mongoose.connection.on('error', (error) => {
+        console.warn('mongoose error:\n' + error);
     });
 
     mongoose.connection.on('disconected', () => {
@@ -69,5 +72,5 @@ export const disconnectFromMongodb = () => {
     mongoose.disconnect();
 };
 function printUsageToStdout() {
-    throw new Error('mongoose disonected due to app');
+    console.log('Gracefully disonected mongodb');
 }

@@ -1,6 +1,7 @@
 import { Schema, model, Model, Types } from 'mongoose';
 
 export interface IUser {
+    _id: Types.ObjectId;
     email: string;
     firstName: string;
     middleName?: string;
@@ -33,4 +34,5 @@ const UserSchema: Schema<IUser> = new Schema({
 });
 
 export const UserModel: Model<IUser> = model('User', UserSchema);
-export type UsersModel = Array<typeof UserModel>;
+// export type UsersModel = Array<typeof UserModel>;
+export type UsersModel = Array<IUser>;

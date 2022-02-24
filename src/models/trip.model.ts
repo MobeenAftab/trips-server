@@ -1,7 +1,8 @@
 import { Schema, model, Model, Types } from 'mongoose';
 
 export interface ITrip {
-    tripName: string;
+    _id: Types.ObjectId;
+    name: string;
     destination: string;
     noOfAvalibleSpaces: number;
     startDate: Date;
@@ -12,7 +13,7 @@ export interface ITrip {
 }
 
 const TripSchema: Schema<ITrip> = new Schema({
-    tripName: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true },
     destination: { type: String, required: true, trim: true },
     noOfAvalibleSpaces: { type: Number, required: true },
     startDate: { type: Date, default: Date.now, required: true, trim: true },
@@ -23,4 +24,5 @@ const TripSchema: Schema<ITrip> = new Schema({
 });
 
 export const TripModel: Model<ITrip> = model('Trip', TripSchema);
-export type TripsModel = Array<typeof TripModel>;
+// export type TripsModel = Array<typeof TripModel>;
+export type TripsModel = Array<ITrip>;

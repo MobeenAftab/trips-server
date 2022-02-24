@@ -6,23 +6,42 @@ import bcrypt from 'bcrypt';
 const userRouter = Router();
 
 userRouter.get('', (req: Request, res: Response) => {
-    res.status(200).json({
-        status: 'user router success',
-    });
+    try {
+        return res.status(200).json({
+            status: 'user router success',
+        });
+    } catch (error) {
+        return res.status(400).json({
+            msg: `User router connection failed:\n ${error}`,
+        });
+    }
 });
 
 userRouter.get('/:id', (req: Request, res: Response) => {
     console.log('GET: user profile details');
 
+    const userId = req?.params?.id;
     try {
-        UserModel.findById(req.params.id).then((user) => {
-            res.status(200).json({
-                msg: `User Found`,
-                user: user,
+        if (!userId) {
+            return res.status(400).json({
+                msg: `Invalid userId:\n ${userId}`,
             });
-        });
+        }
+
+        UserModel.findById(userId)
+            .then((user) => {
+                return res.status(200).json({
+                    msg: `User Found`,
+                    user: user,
+                });
+            })
+            .catch((error) => {
+                res.status(400).json({
+                    msg: `Cannot find user with ID ${userId} :\n ${error}`,
+                });
+            });
     } catch (error) {
-        console.log(`Error finding a user by ID:\n ${error}`);
+        throw new Error(`Error finding a user by ID: ${userId} \n ${error}`);
     }
 });
 
@@ -30,8 +49,8 @@ userRouter.post(
     '/create',
     checkIfUserExists,
     async (req: Request, res: Response) => {
+        console.log('POST: create user profile');
         try {
-            console.log('POST: create user profile');
             req.body.password = await bcrypt.hash(req.body.password, 10);
 
             const userReq: IUser = req.body;
@@ -42,17 +61,17 @@ userRouter.post(
             newUser
                 .save()
                 .then(() => {
-                    res.status(201).json({
+                    return res.status(201).json({
                         msg: 'New user account created',
                     });
                 })
                 .catch((error) => {
-                    res.status(400).json({
+                    return res.status(400).json({
                         msg: `New user not created due to error:\n ${error}`,
                     });
                 });
-        } catch (err) {
-            console.log(`Error creating a user: \n ${err}`);
+        } catch (error) {
+            throw new Error(`Error creating a user: \n ${error}`);
         }
     }
 );
@@ -68,24 +87,23 @@ userRouter.patch('/edit/:id', (req: Request, res: Response) => {
     console.log('PATCH: Edit user profile details');
 
     try {
-        UserModel.findOneAndUpdate(
-            { _id: req.params.id },
-            req.body,
-            (error, doc) => {
-                if (error) {
-                    return error;
-                }
-                res.status(200).json({
+        UserModel.findOneAndUpdate({ _id: req.params.id }, req.body)
+            .then((doc) => {
+                return res.status(200).json({
                     msg: `User profile changed`,
                     user: doc,
                 });
-            }
-        );
+            })
+            .catch((error) => {
+                return res.status(400).json({
+                    msg: `User not edited due to error:\n ${error}`,
+                });
+            });
     } catch (error) {
         if (error) {
-            res.status(400).json({
-                msg: `User profile changes not accepted due to error:\n ${error}`,
-            });
+            throw new Error(
+                `User profile changes not accepted due to error:\n ${error}`
+            );
         }
     }
 });
@@ -94,19 +112,22 @@ userRouter.post('/delete/:id', (req: Request, res: Response) => {
     console.log('POST: Delete user profile');
 
     try {
-        UserModel.findOneAndDelete({ _id: req.params.id }, (error) => {
-            if (error) {
-                return error;
-            }
-            res.status(200).json({
-                msg: `User profile deleted`,
+        UserModel.findByIdAndDelete({ _id: req.params.id })
+            .then(() => {
+                return res.status(200).json({
+                    msg: `User profile deleted`,
+                });
+            })
+            .catch((error) => {
+                res.status(400).json({
+                    msg: `User profile not deleted due to error:\n ${error}`,
+                });
             });
-        });
     } catch (error) {
         if (error) {
-            res.status(400).json({
-                msg: `User profile not deleted due to error:\n ${error}`,
-            });
+            throw new Error(
+                `User profile not deleted due to error:\n ${error}`
+            );
         }
     }
 });
@@ -117,7 +138,7 @@ userRouter.post('/delete/:id', (req: Request, res: Response) => {
  * Reset Password
  *
  * Admin Routes
- * Get USers
+ * Get Users
  */
 
 export default userRouter;

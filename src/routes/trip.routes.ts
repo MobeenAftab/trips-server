@@ -4,96 +4,102 @@ import { TripModel, TripsModel, ITrip } from '../models/trip.model';
 const tripRouter = Router();
 
 tripRouter.get('', (req: Request, res: Response) => {
-    res.status(200).json({
-        status: 'trip router success',
-    });
+    try {
+        return res.status(200).json({
+            status: 'trip router success',
+        });
+    } catch (error) {
+        throw new Error(`Unable to connect to trip: \n ${error}`);
+    }
 });
 
 // Get active trips, Return in asc order
-tripRouter.get('/trips', async (req: Request, res: Response) => {
+tripRouter.get('/trips', (req: Request, res: Response) => {
     console.log('GET: get active trips');
-
     try {
         TripModel.find({ isActive: true })
-            .then((docs) => {
-                res.status(201).json({
+            .then((docs: TripsModel) => {
+                return res.status(201).json({
                     msg: 'Get active trips',
                     trips: docs,
                 });
             })
             .catch((error) => {
-                res.status(400).json({
+                return res.status(400).json({
                     msg: `Get active trips error ${error}`,
                 });
             });
     } catch (error) {
-        console.log(`Error get trips:\n ${error}`);
+        throw new Error(`Error get trips:\n ${error}`);
     }
 });
 
 // Get trip by id
-tripRouter.get('/:id', async (req: Request, res: Response) => {
+tripRouter.get('/:id', (req: Request, res: Response) => {
     console.log('GET: get single trip');
+    const tripId = req?.params?.id;
 
     try {
-        TripModel.findOne({ _id: req.params.id })
+        TripModel.findById<ITrip>({ _id: tripId })
             .then((doc) => {
                 console.log(doc);
-                res.status(200).json({
+                return res.status(200).json({
                     msg: 'Got trip by id',
                     trip: doc,
                 });
             })
             .catch((error) => {
-                res.status(400).json({
-                    msg: `Unable to find Trip because: ${error}`,
+                return res.status(400).json({
+                    msg: `Unable to find Trip ${tripId} because: ${error}`,
                 });
             });
     } catch (error) {
-        console.log(`Error get trip by id: \n ${error}`);
+        throw new Error(`Error get trip by id: ${tripId} \n ${error}`);
     }
 });
 
 // Update trip details
-tripRouter.patch('/edit/:id', async (req: Request, res: Response) => {
+tripRouter.patch('/edit/:id', (req: Request, res: Response) => {
     console.log('PATCH: update trip details');
+    const tripId = req?.params?.id;
 
     try {
-        TripModel.findByIdAndUpdate({ _id: req.params.id }, req.body)
+        TripModel.findByIdAndUpdate({ _id: tripId }, req.body)
             .then((doc) => {
-                res.status(200).json({
+                return res.status(200).json({
                     msg: 'Trip details changed',
                     trip: doc,
                 });
             })
             .catch((err) => {
-                res.status(400).json({
-                    msg: `Could not update trip details because: ${err}`,
+                return res.status(400).json({
+                    msg: `Could not update trip ${tripId} details because: ${err}`,
                 });
             });
     } catch (error) {
-        console.log(`Error edit a trip: \n ${error}`);
+        throw new Error(`Error edit trip by id: ${tripId} \n ${error}`);
     }
 });
 
 // Delete Trip
 tripRouter.delete('/delete/:id', async (req: Request, res: Response) => {
     console.log('POST: Delete trip');
+    const tripId = req?.params?.id;
 
     try {
-        TripModel.findByIdAndDelete({ _id: req.params.id })
+        TripModel.findByIdAndDelete({ _id: tripId })
             .then(() => {
-                res.status(200).json({
+                return res.status(200).json({
                     msg: `Trip has been marked for delection`,
                 });
             })
             .catch((err) => {
-                res.status(400).json({
-                    msg: `Trip cannot be deleted because: ${err}`,
+                return res.status(400).json({
+                    msg: `Trip ${tripId} cannot be deleted because: ${err}`,
                 });
             });
     } catch (error) {
-        console.log(`Error deleting a trip: \n  ${error}`);
+        throw new Error(`Error delete trip by id: ${tripId} \n ${error}`);
     }
 });
 
@@ -104,18 +110,18 @@ tripRouter.patch('/signup/:id', async (req: Request, res: Response) => {
     try {
         TripModel.findByIdAndUpdate({ _id: req.params.id }, req.body)
             .then((doc) => {
-                res.status(200).json({
+                return res.status(200).json({
                     msg: 'User added to trip',
                     trip: doc,
                 });
             })
             .catch((err) => {
-                res.status(400).json({
+                return res.status(400).json({
                     msg: `Could not add user to trip because: ${err}`,
                 });
             });
     } catch (error) {
-        console.log(`Error adding a user to trip: ${error}`);
+        throw new Error(` \n ${error}`);
     }
 });
 
@@ -124,7 +130,7 @@ tripRouter.patch('/signup/:id', async (req: Request, res: Response) => {
 // Admin Routes
 
 // TODO: middleware to check if user is admin
-tripRouter.post('/create', async (req: Request, res: Response) => {
+tripRouter.post('/create', (req: Request, res: Response) => {
     console.log('POST: create trip');
 
     try {
@@ -146,7 +152,7 @@ tripRouter.post('/create', async (req: Request, res: Response) => {
                 });
             });
     } catch (error) {
-        console.log(`Error creating a trip:\n  ${error}`);
+        throw new Error(`Error creating a trip \n ${error}`);
     }
 });
 
