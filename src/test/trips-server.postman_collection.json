@@ -1,0 +1,517 @@
+{
+	"info": {
+		"_postman_id": "c573b8f8-1101-42e1-aa6d-03e3b4b8a78c",
+		"name": "trips-server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user: PASS",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "test20@e.com",
+									"type": "text"
+								},
+								{
+									"key": "firstName",
+									"value": "nametest",
+									"type": "text"
+								},
+								{
+									"key": "middleName",
+									"value": "middleName",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "lastName",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "mobileNumber",
+									"value": "0123456789",
+									"type": "text"
+								},
+								{
+									"key": "homePhone",
+									"value": "0123456789",
+									"type": "text"
+								},
+								{
+									"key": "emergencyContactName",
+									"value": "emergencyContactName",
+									"type": "text"
+								},
+								{
+									"key": "emergencyContactNumber",
+									"value": "1234567890",
+									"type": "text"
+								},
+								{
+									"key": "canDrive",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/create/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"create",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user: FAIL",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "firstName",
+									"value": "nametest",
+									"type": "text"
+								},
+								{
+									"key": "middleName",
+									"value": "middleName",
+									"type": "text"
+								},
+								{
+									"key": "lastName",
+									"value": "lastName",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "mobileNumber",
+									"value": "mobileNumber",
+									"type": "text"
+								},
+								{
+									"key": "homePhone",
+									"value": "homePhone",
+									"type": "text"
+								},
+								{
+									"key": "emergencyContactName",
+									"value": "emergencyContactName",
+									"type": "text"
+								},
+								{
+									"key": "emergencyContactNumber",
+									"value": "emergencyContactNumber",
+									"type": "text"
+								},
+								{
+									"key": "canDrive",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/userprofile/createuser/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"userprofile",
+								"createuser",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\nuser : {\"_id\":{\"$oid\":\"6016e2acd6ffba14d4db8646\"},\"canDrive\":true,\"trips\":[],\"isAdmin\":false,\"firstName\":\"nametest\",\"middleName\":\"middleName\",\"lastName\":\"lastName\",\"password\":\"password\",\"mobileNumber\":{\"$numberInt\":\"123456789\"},\"homePhone\":{\"$numberInt\":\"123456789\"},\"emergencyContactName\":\"emergencyContactName\",\"emergencyContactNumber\":{\"$numberInt\":\"1234567890\"},\"accountCreatedOn\":{\"$date\":{\"$numberLong\":\"1612112556504\"}},\"__v\":{\"$numberInt\":\"0\"}}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/userprofile/deleteuser/60171095abde1319e4bcd536",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"userprofile",
+								"deleteuser",
+								"60171095abde1319e4bcd536"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/62180207813e09649fcd18a2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"62180207813e09649fcd18a2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EDIT user: PASS",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "emergencyContactName",
+									"value": "Update emergency contact name",
+									"type": "text"
+								},
+								{
+									"key": "emergencyContactNumber",
+									"value": "11111111111111",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/edit/6217fb76f7057edc6bafce68",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"edit",
+								"6217fb76f7057edc6bafce68"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User from Trip",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "userId",
+									"value": "62180207813e09649fcd18a2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trip/removeuser/62180028a413ea99494bb4bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"removeuser",
+								"62180028a413ea99494bb4bb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trips",
+			"item": [
+				{
+					"name": "Delete Trip",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/trips/deletetrip/608e5cc47f5a8a23bc9899bd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trips",
+								"deletetrip",
+								"608e5cc47f5a8a23bc9899bd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Trip: PASS",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Trip 2",
+									"type": "text"
+								},
+								{
+									"key": "destination",
+									"value": "Glasgow",
+									"type": "text"
+								},
+								{
+									"key": "noOfAvalibleSpaces",
+									"value": "20",
+									"type": "text"
+								},
+								{
+									"key": "startDate",
+									"value": "2022-02-24T21:49:08.854Z",
+									"type": "text"
+								},
+								{
+									"key": "returnDate",
+									"value": "2022-02-24T21:49:08.854Z",
+									"type": "text"
+								},
+								{
+									"key": "signedUp",
+									"value": "[]",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trip/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trip by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/trip/62180028a413ea99494bb4bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"62180028a413ea99494bb4bb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Active Trips",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/trip/trips",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"trips"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit trip details",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "tripName",
+									"value": "Trip Title Update",
+									"type": "text"
+								},
+								{
+									"key": "destination",
+									"value": "Glasgow",
+									"type": "text"
+								},
+								{
+									"key": "noOfAvalibleSpaces",
+									"value": "50",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trip/edit/62180028a413ea99494bb4bb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"edit",
+								"62180028a413ea99494bb4bb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add User to Trip",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "userId",
+									"value": "608dadc7ea687e1cf46e9637",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/trip/adduser/621800eca413ea99494bb4c3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"trip",
+								"adduser",
+								"621800eca413ea99494bb4c3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Server health check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						""
+					]
+				},
+				"description": "Server health check"
+			},
+			"response": []
+		}
+	]
+}
