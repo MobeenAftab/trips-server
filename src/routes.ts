@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import tripRouter from './routes/trip.routes';
 import userRouter from './routes/user.routes';
 
 const router = Router();
@@ -11,5 +12,6 @@ router.get('', (req, res) => {
 });
 
 router.use('/user', userRouter);
+router.use('/trip', tripRouter);
 
 export default router;

@@ -22,7 +22,7 @@ userRouter.get('/:id', (req: Request, res: Response) => {
             });
         });
     } catch (error) {
-        console.log(`Error finding a user by ID: ${error}`);
+        console.log(`Error finding a user by ID:\n ${error}`);
     }
 });
 
@@ -52,7 +52,7 @@ userRouter.post(
                     });
                 });
         } catch (err) {
-            console.log(`Error creating a user: ${err}`);
+            console.log(`Error creating a user: \n ${err}`);
         }
     }
 );
@@ -90,7 +90,7 @@ userRouter.patch('/edit/:id', (req: Request, res: Response) => {
     }
 });
 
-userRouter.post('/deleteuser/:id', (req: Request, res: Response) => {
+userRouter.post('/delete/:id', (req: Request, res: Response) => {
     console.log('POST: Delete user profile');
 
     try {
