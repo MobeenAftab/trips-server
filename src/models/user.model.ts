@@ -14,7 +14,7 @@ export interface IUser {
     canDrive?: boolean;
     trips: Types.ObjectId[] | Array<Record<string, Types.ObjectId>>;
     isAdmin: boolean;
-    accountCreatedOn: Date;
+    createdAt: Date;
 }
 
 const UserSchema: Schema<IUser> = new Schema({
@@ -30,7 +30,7 @@ const UserSchema: Schema<IUser> = new Schema({
     canDrive: { type: Boolean, required: true, default: false },
     trips: { type: [Schema.Types.ObjectId], default: [], required: true },
     isAdmin: { type: Boolean, default: false, required: true },
-    accountCreatedOn: { type: Date, default: Date.now, required: true },
+    createdAt: { type: Date, default: Date.now, required: true },
 });
 
 export const UserModel: Model<IUser> = model('User', UserSchema);

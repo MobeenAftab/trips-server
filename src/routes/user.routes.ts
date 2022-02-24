@@ -4,6 +4,7 @@ import { IUser, UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 
 const userRouter = Router();
+const options = { new: true };
 
 userRouter.get('', (req: Request, res: Response) => {
     try {
@@ -63,6 +64,8 @@ userRouter.post(
                 .then(() => {
                     return res.status(201).json({
                         msg: 'New user account created',
+                        userId: newUser.id,
+                        user: newUser,
                     });
                 })
                 .catch((error) => {
@@ -85,9 +88,10 @@ userRouter.post(
  */
 userRouter.patch('/edit/:id', (req: Request, res: Response) => {
     console.log('PATCH: Edit user profile details');
+    const userId = req?.params?.id;
 
     try {
-        UserModel.findOneAndUpdate({ _id: req.params.id }, req.body)
+        UserModel.findByIdAndUpdate({ _id: userId }, options, req.body)
             .then((doc) => {
                 return res.status(200).json({
                     msg: `User profile changed`,
@@ -96,13 +100,13 @@ userRouter.patch('/edit/:id', (req: Request, res: Response) => {
             })
             .catch((error) => {
                 return res.status(400).json({
-                    msg: `User not edited due to error:\n ${error}`,
+                    msg: `User $${userId} not edited due to error:\n ${error}`,
                 });
             });
     } catch (error) {
         if (error) {
             throw new Error(
-                `User profile changes not accepted due to error:\n ${error}`
+                `User ${userId} profile changes not accepted due to error:\n ${error}`
             );
         }
     }
@@ -111,8 +115,9 @@ userRouter.patch('/edit/:id', (req: Request, res: Response) => {
 userRouter.post('/delete/:id', (req: Request, res: Response) => {
     console.log('POST: Delete user profile');
 
+    const userId = req?.params?.id;
     try {
-        UserModel.findByIdAndDelete({ _id: req.params.id })
+        UserModel.findByIdAndDelete({ _id: userId })
             .then(() => {
                 return res.status(200).json({
                     msg: `User profile deleted`,
@@ -120,13 +125,13 @@ userRouter.post('/delete/:id', (req: Request, res: Response) => {
             })
             .catch((error) => {
                 res.status(400).json({
-                    msg: `User profile not deleted due to error:\n ${error}`,
+                    msg: `User ${userId} profile not deleted due to error:\n ${error}`,
                 });
             });
     } catch (error) {
         if (error) {
             throw new Error(
-                `User profile not deleted due to error:\n ${error}`
+                `User ${userId} profile not deleted due to error:\n ${error}`
             );
         }
     }

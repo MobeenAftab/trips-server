@@ -1,7 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { TripModel, TripsModel, ITrip } from '../models/trip.model';
+import { Types } from 'mongoose';
 
 const tripRouter = Router();
+const options = { new: true };
 
 tripRouter.get('', (req: Request, res: Response) => {
     try {
@@ -14,6 +16,7 @@ tripRouter.get('', (req: Request, res: Response) => {
 });
 
 // Get active trips, Return in asc order
+// TODO: Refactor this to pass in options for active and ended trips
 tripRouter.get('/trips', (req: Request, res: Response) => {
     console.log('GET: get active trips');
     try {
@@ -64,7 +67,7 @@ tripRouter.patch('/edit/:id', (req: Request, res: Response) => {
     const tripId = req?.params?.id;
 
     try {
-        TripModel.findByIdAndUpdate({ _id: tripId }, req.body)
+        TripModel.findByIdAndUpdate({ _id: tripId }, options, req.body)
             .then((doc) => {
                 return res.status(200).json({
                     msg: 'Trip details changed',
@@ -104,12 +107,19 @@ tripRouter.delete('/delete/:id', async (req: Request, res: Response) => {
 });
 
 // Add user to trip
-tripRouter.patch('/signup/:id', async (req: Request, res: Response) => {
-    console.log('POST: Delete trip');
+tripRouter.patch('/adduser/:id', async (req: Request, res: Response) => {
+    console.log('PATCH: Add user to trip');
 
+    const tripId = req?.params?.id;
+    const userId = req?.body?.userId;
     try {
-        TripModel.findByIdAndUpdate({ _id: req.params.id }, req.body)
+        TripModel.findByIdAndUpdate(
+            { _id: tripId },
+            { $addToSet: { signedUp: userId } },
+            options
+        )
             .then((doc) => {
+                console.log('Add user to trip---', doc);
                 return res.status(200).json({
                     msg: 'User added to trip',
                     trip: doc,
@@ -117,15 +127,45 @@ tripRouter.patch('/signup/:id', async (req: Request, res: Response) => {
             })
             .catch((err) => {
                 return res.status(400).json({
-                    msg: `Could not add user to trip because: ${err}`,
+                    msg: `Could not add user to trip because:\n ${err}`,
                 });
             });
     } catch (error) {
-        throw new Error(` \n ${error}`);
+        throw new Error(`Could not add user to trip because:\n ${error}`);
     }
 });
 
 // Remove user from trip
+tripRouter.patch('/removeuser/:id', async (req: Request, res: Response) => {
+    console.log('PATCH: Remove user from trip');
+
+    const tripId = req?.params?.id;
+    const userId = req?.body?.userId;
+
+    try {
+        TripModel.findByIdAndUpdate(
+            { _id: tripId },
+            { $pull: { signedUp: userId } },
+            options
+        )
+            .then((doc) => {
+                return res.status(200).json({
+                    msg: 'User removed from trip',
+                    tripId: tripId,
+                    trip: doc,
+                });
+            })
+            .catch((error) => {
+                return res.status(400).json({
+                    msg: `Could not remove user ${userId} from trip ${tripId} because: ${error}`,
+                });
+            });
+    } catch (error) {
+        throw new Error(
+            `Could not remove user from trip ${tripId} because: \n ${error}`
+        );
+    }
+});
 
 // Admin Routes
 

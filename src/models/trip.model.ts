@@ -6,9 +6,9 @@ export interface ITrip {
     destination: string;
     noOfAvalibleSpaces: number;
     startDate: Date;
-    returnDate: Date;
+    endDate: Date;
     signedUp: Types.ObjectId[] | Array<Record<string, Types.ObjectId>>;
-    tripCreatedOn: Date;
+    createdAt: Date;
     isActive: boolean;
 }
 
@@ -17,9 +17,9 @@ const TripSchema: Schema<ITrip> = new Schema({
     destination: { type: String, required: true, trim: true },
     noOfAvalibleSpaces: { type: Number, required: true },
     startDate: { type: Date, default: Date.now, required: true, trim: true },
-    returnDate: { type: Date, default: Date.now, required: true, trim: true },
+    endDate: { type: Date, default: Date.now, required: true, trim: true },
     signedUp: { type: [Schema.Types.ObjectId], default: [], required: true },
-    tripCreatedOn: { type: Date, default: Date.now, required: true },
+    createdAt: { type: Date, default: Date.now, required: true },
     isActive: { type: Boolean, required: true, default: true },
 });
 
