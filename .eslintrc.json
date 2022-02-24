@@ -9,7 +9,10 @@
         "plugin:@typescript-eslint/recommended",
         "prettier",
         "plugin:prettier/recommended",
-        "plugin:node/recommended"
+        "plugin:node/recommended",
+        "plugin:import/errors",
+        "plugin:import/warnings",
+        "plugin:import/typescript"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -23,5 +26,14 @@
             "error",
             { "ignores": ["modules"] }
         ]
+    },
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "paths": ["src"],
+                "extensions": [".js", ".jsx", ".ts", ".tsx"],
+                "moduleDirectory": ["node_modules", "src/"]
+            }
+        }
     }
 }
