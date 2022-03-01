@@ -10,11 +10,11 @@ import router from './routes';
 let dotenvConfig;
 if (process.env.NODE_ENV !== 'production') {
     dotenvConfig = dotenv.config();
-}
 
-// Check if env variables have imported correctly
-if (dotenvConfig.error) {
-    throw dotenvConfig.error;
+    // Check if env variables have imported correctly
+    if (dotenvConfig.error) {
+        throw dotenvConfig.error;
+    }
 }
 
 const PORT = process.env?.PORT || 3000;
