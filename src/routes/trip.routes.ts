@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { TripModel, TripsModel, ITrip } from '../models/trip.model';
-import { Types } from 'mongoose';
+import { isUserAdmin } from '../middleware/authorisation.middleware';
 
 const tripRouter = Router();
 const options = { new: true };
@@ -58,51 +58,6 @@ tripRouter.get('/:id', (req: Request, res: Response) => {
             });
     } catch (error) {
         throw new Error(`Error get trip by id: ${tripId} \n ${error}`);
-    }
-});
-
-// Update trip details
-tripRouter.patch('/edit/:id', (req: Request, res: Response) => {
-    console.log('PATCH: update trip details');
-    const tripId = req?.params?.id;
-
-    try {
-        TripModel.findByIdAndUpdate({ _id: tripId }, options, req.body)
-            .then((doc) => {
-                return res.status(200).json({
-                    msg: 'Trip details changed',
-                    trip: doc,
-                });
-            })
-            .catch((err) => {
-                return res.status(400).json({
-                    msg: `Could not update trip ${tripId} details because: ${err}`,
-                });
-            });
-    } catch (error) {
-        throw new Error(`Error edit trip by id: ${tripId} \n ${error}`);
-    }
-});
-
-// Delete Trip
-tripRouter.delete('/delete/:id', async (req: Request, res: Response) => {
-    console.log('POST: Delete trip');
-    const tripId = req?.params?.id;
-
-    try {
-        TripModel.findByIdAndDelete({ _id: tripId })
-            .then(() => {
-                return res.status(200).json({
-                    msg: `Trip has been marked for delection`,
-                });
-            })
-            .catch((err) => {
-                return res.status(400).json({
-                    msg: `Trip ${tripId} cannot be deleted because: ${err}`,
-                });
-            });
-    } catch (error) {
-        throw new Error(`Error delete trip by id: ${tripId} \n ${error}`);
     }
 });
 
@@ -169,8 +124,7 @@ tripRouter.patch('/removeuser/:id', async (req: Request, res: Response) => {
 
 // Admin Routes
 
-// TODO: middleware to check if user is admin
-tripRouter.post('/create', (req: Request, res: Response) => {
+tripRouter.post('/create', isUserAdmin, (req: Request, res: Response) => {
     console.log('POST: create trip');
 
     try {
@@ -195,5 +149,54 @@ tripRouter.post('/create', (req: Request, res: Response) => {
         throw new Error(`Error creating a trip \n ${error}`);
     }
 });
+
+// Update trip details
+tripRouter.patch('/edit/:id', isUserAdmin, (req: Request, res: Response) => {
+    console.log('PATCH: update trip details');
+    const tripId = req?.params?.id;
+
+    try {
+        TripModel.findByIdAndUpdate({ _id: tripId }, options, req.body)
+            .then((doc) => {
+                return res.status(200).json({
+                    msg: 'Trip details changed',
+                    trip: doc,
+                });
+            })
+            .catch((err) => {
+                return res.status(400).json({
+                    msg: `Could not update trip ${tripId} details because: ${err}`,
+                });
+            });
+    } catch (error) {
+        throw new Error(`Error edit trip by id: ${tripId} \n ${error}`);
+    }
+});
+
+// Delete Trip
+tripRouter.delete(
+    '/delete/:id',
+    isUserAdmin,
+    async (req: Request, res: Response) => {
+        console.log('POST: Delete trip');
+        const tripId = req?.params?.id;
+
+        try {
+            TripModel.findByIdAndDelete({ _id: tripId })
+                .then(() => {
+                    return res.status(200).json({
+                        msg: `Trip has been marked for delection`,
+                    });
+                })
+                .catch((err) => {
+                    return res.status(400).json({
+                        msg: `Trip ${tripId} cannot be deleted because: ${err}`,
+                    });
+                });
+        } catch (error) {
+            throw new Error(`Error delete trip by id: ${tripId} \n ${error}`);
+        }
+    }
+);
 
 export default tripRouter;

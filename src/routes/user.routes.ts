@@ -104,11 +104,9 @@ userRouter.patch('/edit/:id', (req: Request, res: Response) => {
                 });
             });
     } catch (error) {
-        if (error) {
-            throw new Error(
-                `User ${userId} profile changes not accepted due to error:\n ${error}`
-            );
-        }
+        throw new Error(
+            `User ${userId} profile changes not accepted due to error:\n ${error}`
+        );
     }
 });
 
