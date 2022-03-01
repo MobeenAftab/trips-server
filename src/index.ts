@@ -6,7 +6,11 @@ import cors from 'cors';
 
 import { connectToMongodb } from './config/mongodb';
 import router from './routes';
-const dotenvConfig = dotenv.config();
+
+let dotenvConfig;
+if (process.env.NODE_ENV !== 'production') {
+    dotenvConfig = dotenv.config();
+}
 
 // Check if env variables have imported correctly
 if (dotenvConfig.error) {
