@@ -13,7 +13,7 @@ import mongoose from 'mongoose';
 
 let dbClient: mongoose.Connection;
 
-export const connectToMongodb = () => {
+export const connectToMongodb = async () => {
     dotenv.config();
 
     const dbUserName = process.env.MONGODB_USERNAME ?? 'NA';
@@ -34,6 +34,7 @@ export const connectToMongodb = () => {
             .connect(uri)
             .then(() => {
                 console.log('Mongodb Connected\n');
+                dbClient = mongoose.connection;
             })
             .catch((error) => {
                 throw new Error(`Mongodb connection error \n ${error}`);
@@ -41,8 +42,6 @@ export const connectToMongodb = () => {
     } catch (error) {
         throw new Error(`Mongodb connection error \n ${error}`);
     }
-
-    dbClient = mongoose.connection;
 
     mongoose.connection.on('connected', () => {
         console.log('mongoose connected to db');
@@ -62,9 +61,11 @@ export const connectToMongodb = () => {
             printUsageToStdout();
         });
     });
+
+    return dbClient;
 };
 
-export const disconnectFromMongodb = () => {
+export const disconnectFromMongodb = async () => {
     if (!dbClient) {
         return;
     }
