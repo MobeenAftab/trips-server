@@ -9,6 +9,6 @@
         "baseUrl": "src"
     },
     "include": ["src/**/*"],
-    "exclude": ["node_modules", ".vscode"],
+    "exclude": ["node_modules", ".vscode", "**/*.spec.ts"],
     "lib": ["es2015"]
 }
