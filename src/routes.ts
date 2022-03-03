@@ -5,7 +5,7 @@ import authenticationRouter from './routes/authentication.routes';
 
 const router = Router();
 
-router.get('status', (req, res) => {
+router.get('/status', (req, res) => {
     try {
         res.status(200).json({
             msg: 'API Server connection success',
