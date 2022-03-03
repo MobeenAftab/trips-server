@@ -60,7 +60,6 @@ export const connectToMongodb = () => {
         mongoose.connection.close(() => {
             mongoose.disconnect();
             printUsageToStdout();
-            process.exitCode = 1;
         });
     });
 };
