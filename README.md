@@ -58,3 +58,9 @@ Automated unit and e2e testing coming soon.
 -   logger for server side logging.
 -   Automate postman API route testing.
 -   Process to generate API documentation.
+
+-   [ ] Refactor code to extract all logic from routers into controllers
+-   [ ] Redirects for urls that dont exist
+-   [ ] middleware to handle request body data, should match entity type and
+    -   have the required fields present. If not error out, write request should have some validation on body data.
+-   [ ] Validate request body, add typings to body, validate query url
