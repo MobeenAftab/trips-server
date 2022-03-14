@@ -51,16 +51,17 @@ Automated unit and e2e testing coming soon.
 
 # TODO
 
--   Frontend written in Angular can be found here.
--   Add e2e and unit tests.
--   Hosted on Heroku with CI/CD pipeline.
--   Docker for local mongodb instance.
--   logger for server side logging.
--   Automate postman API route testing.
--   Process to generate API documentation.
+-   [ ] Frontend written in Angular can be found here.
+-   [ ] Add e2e and unit tests.
+-   [ ] Hosted on Heroku with CI/CD pipeline.
+-   [ ] Docker for local mongodb instance.
+-   [ ] logger for server side logging.
+-   [ ] Automate postman API route testing.
+-   [ ] Process to generate API documentation.
 
 -   [ ] Refactor code to extract all logic from routers into controllers
 -   [ ] Redirects for urls that dont exist
 -   [ ] middleware to handle request body data, should match entity type and
     -   have the required fields present. If not error out, write request should have some validation on body data.
 -   [ ] Validate request body, add typings to body, validate query url
+-   [ ] Some CRUD operations can be refactored into a generic controller over the trip and user models

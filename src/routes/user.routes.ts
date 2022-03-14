@@ -23,7 +23,7 @@ userRouter.get('', (req: Request, res: Response) => {
     }
 });
 
-userRouter.get('/:id', async (req: Request, res: Response) => {
+userRouter.get('/:id', (req: Request, res: Response) => {
     console.log('GET: user profile details');
 
     const userId = req?.params?.id ?? null;
@@ -34,7 +34,7 @@ userRouter.get('/:id', async (req: Request, res: Response) => {
             });
         }
 
-        await getUserById(userId)
+        getUserById(userId)
             .then((doc) => {
                 return res.status(200).json({
                     msg: `User Found`,
@@ -54,40 +54,37 @@ userRouter.get('/:id', async (req: Request, res: Response) => {
     }
 });
 
-userRouter.post(
-    '/create',
-    checkIfUserExists,
-    async (req: Request, res: Response) => {
-        console.log('POST: create user');
-        try {
-            const user = req?.body ?? null;
+userRouter.post('/create', checkIfUserExists, (req: Request, res: Response) => {
+    console.log('POST: create user');
+    try {
+        const user = req?.body ?? null;
 
-            await createUser(user)
-                .then((doc) => {
-                    return res.status(201).json({
-                        msg: 'New user account created',
-                        userId: doc.id,
-                        user: doc,
-                    });
-                })
-                .catch((error) => {
-                    return res.status(400).json({
-                        msg: `New user not created due to errors`,
-                        error,
-                    });
+        createUser(user)
+            .then((doc) => {
+                return res.status(201).json({
+                    msg: 'New user account created',
+                    userId: doc.id,
+                    user: doc,
                 });
-        } catch (error) {
-            throw new Error(`Error creating a user: \n ${error}`);
-        }
+            })
+            .catch((error) => {
+                return res.status(400).json({
+                    msg: `New user not created due to errors`,
+                    error,
+                });
+            });
+    } catch (error) {
+        throw new Error(`Error creating a user: \n ${error}`);
     }
-);
+});
 
-userRouter.patch('/edit/:id', async (req: Request, res: Response) => {
+userRouter.patch('/edit/:id', (req: Request, res: Response) => {
     console.log('PATCH: Edit user profile details');
     const id = req?.params?.id ?? null;
+
     try {
         const user: IUser = req?.body?.id ?? null;
-        await editUser(id, user)
+        editUser(id, user)
             .then((doc) => {
                 return res.status(200).json({
                     msg: `User profile changed`,
@@ -106,12 +103,12 @@ userRouter.patch('/edit/:id', async (req: Request, res: Response) => {
     }
 });
 
-userRouter.post('/delete/:id', async (req: Request, res: Response) => {
+userRouter.post('/delete/:id', (req: Request, res: Response) => {
     console.log('POST: Delete user profile');
 
     const id = req?.params?.id ?? null;
     try {
-        await deleteUser(id)
+        deleteUser(id)
             .then(() => {
                 return res.status(200).json({
                     msg: `User profile deleted`,
