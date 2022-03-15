@@ -1,4 +1,5 @@
 import { Schema, model, Model, Types } from 'mongoose';
+import PERMISSION_ROLES from '../config/permissionRoles';
 
 export interface IUser {
     _id: Types.ObjectId;
@@ -14,6 +15,7 @@ export interface IUser {
     canDrive?: boolean;
     trips: Types.ObjectId[] | Array<Record<string, Types.ObjectId>>;
     isAdmin: boolean;
+    roles: number[];
     createdAt: Date;
 }
 
@@ -30,9 +32,9 @@ const UserSchema: Schema<IUser> = new Schema({
     canDrive: { type: Boolean, required: true, default: false },
     trips: { type: [Schema.Types.ObjectId], default: [], required: true },
     isAdmin: { type: Boolean, default: false, required: true },
+    roles: { type: [Number], default: [PERMISSION_ROLES.USER], required: true },
     createdAt: { type: Date, default: Date.now, required: true },
 });
 
 export const UserModel: Model<IUser> = model('User', UserSchema);
-// export type UsersModel = Array<typeof UserModel>;
 export type UsersModel = Array<IUser>;

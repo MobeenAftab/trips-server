@@ -24,5 +24,4 @@ const TripSchema: Schema<ITrip> = new Schema({
 });
 
 export const TripModel: Model<ITrip> = model('Trip', TripSchema);
-// export type TripsModel = Array<typeof TripModel>;
 export type TripsModel = Array<ITrip>;

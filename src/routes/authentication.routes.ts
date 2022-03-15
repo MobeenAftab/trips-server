@@ -1,15 +1,12 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcrypt';
-import { IUser, UserModel } from '../models/user.model';
-import { sign, Jwt, verify } from 'jsonwebtoken';
-import { TokenModel } from '../models/token.model';
+import { Router, Request, Response } from 'express';
+import { login } from '../controllers/authentication.controller';
 import {
     checkIfRefreshTokenExists,
     deleteRefreshToken,
-    generateAccessToken,
-    generateRefreshToken,
-    saveRefreshToken,
-} from '../middleware/authentication.middleware';
+    generateToken,
+    verifyToken,
+} from '../controllers/token.controller';
+import { getUserById } from '../controllers/user.controller';
 
 const authenticationRouter = Router();
 
@@ -25,43 +22,28 @@ authenticationRouter.get('', (req: Request, res: Response) => {
 
 authenticationRouter.get('/login', async (req: Request, res: Response) => {
     console.log('POST: user login');
+    const { email, password } = req.body;
 
     try {
-        await UserModel.findOne({
-            email: req?.body?.email,
-        })
-            .then(async (doc: IUser) => {
-                const validPassword = await bcrypt.compare(
-                    req?.body?.password,
-                    doc.password
-                );
+        login(email, password)
+            .then(({ user, accessToken, refreshToken }) => {
+                res.cookie('jwt', refreshToken, {
+                    httpOnly: true,
+                    maxAge: 24 * 60 * 60 * 1000,
+                    sameSite: 'none',
+                }); //secure: true,
 
-                if (validPassword) {
-                    const { _id, email, isAdmin } = doc;
-                    console.log(email);
-
-                    const accessToken = await generateAccessToken(
-                        _id,
-                        email,
-                        isAdmin
-                    );
-                    const refreshToken = await generateRefreshToken(
-                        accessToken
-                    );
-
-                    await saveRefreshToken(refreshToken);
-
-                    return res.status(200).json({
-                        msg: `User logged in`,
-                        user: doc,
-                        accessToken,
-                        refreshToken,
-                    });
-                }
+                return res.status(200).json({
+                    msg: `User logged in`,
+                    user,
+                    accessToken,
+                    refreshToken,
+                });
             })
             .catch((error) => {
                 return res.status(400).json({
-                    msg: `Cannot login because: ${error}`,
+                    msg: `Cannot login because`,
+                    error,
                 });
             });
     } catch (error) {
@@ -71,20 +53,26 @@ authenticationRouter.get('/login', async (req: Request, res: Response) => {
 
 authenticationRouter.post('/logout', async (req: Request, res: Response) => {
     console.log('POST: user logout');
-    const refreshToken = req?.body?.refreshToken;
+    const cookies = req.cookies;
 
     try {
-        if (refreshToken == null) {
+        if (!cookies?.jwt) {
             return res.status(401).json({
-                msg: 'refreshToken not found',
-                refreshToken: refreshToken,
+                msg: 'Invalid Credentials',
             });
         }
-        if ((await deleteRefreshToken(refreshToken)) === true) {
-            return res.status(200).json({
-                msg: 'Refresh token deleted, user has logged out',
-            });
-        }
+        const refreshToken = cookies.jwt;
+        deleteRefreshToken(refreshToken).then(() => {
+            res.clearCookie('jwt', {
+                httpOnly: true,
+                sameSite: 'none',
+                secure: true,
+            })
+                .status(200)
+                .json({
+                    msg: 'Refresh token deleted, user has logged out',
+                });
+        });
     } catch (error) {
         throw new Error(`Unable to logout: \n ${error}`);
     }
@@ -95,40 +83,50 @@ authenticationRouter.post('/logout', async (req: Request, res: Response) => {
  * @returns a new token if refresh token does not exist
  *
  */
-authenticationRouter.post('/token', async (req: Request, res: Response) => {
-    console.log('POST: token');
-    const refreshToken = req?.body?.refreshToken;
-    try {
-        if (refreshToken == null) {
-            return res.status(401).json({
-                msg: 'refreshToken not found in request',
-                refreshToken: refreshToken,
-            });
-        }
+authenticationRouter.post(
+    '/refreshtoken',
+    async (req: Request, res: Response) => {
+        console.log('POST: token');
+        const refreshToken = req?.body?.refreshToken ?? null;
+        const cookies = req.cookies;
 
-        if ((await checkIfRefreshTokenExists(refreshToken)) === false) {
-            return res.status(403).json({
-                msg: 'refreshToken not in database',
-                refreshToken: refreshToken,
-            });
-        }
-
-        verify(
-            refreshToken,
-            process.env.REFRESH_TOKEN_SECRET,
-            async (err, doc) => {
-                if (err) {
-                    return err;
-                }
-                const token = await generateRefreshToken(doc);
-                return res.status(200).json({
-                    msg: 'Created new refresh token',
-                    refreshToken: token,
+        try {
+            if (refreshToken == null || !cookies?.jwt) {
+                return res.status(401).json({
+                    msg: 'Invalid Credentials',
+                    refreshToken,
                 });
             }
-        );
-    } catch (error) {
-        throw new Error(`Unable to logout: \n ${error}`);
+
+            if ((await checkIfRefreshTokenExists(refreshToken)) === false) {
+                return res.status(403).json({
+                    msg: 'refreshToken not in database',
+                    refreshToken,
+                });
+            }
+
+            const decodedToken = await verifyToken(
+                refreshToken,
+                process.env.REFRESH_TOKEN_SECRET
+            );
+            const user = await getUserById(decodedToken.userId);
+            const accessToken = await generateToken(
+                user._id,
+                user.email,
+                process.env.ACCESS_TOKEN_SECRET,
+                '15m',
+                user.roles
+            );
+
+            return res.status(200).json({
+                msg: `New access token`,
+                accessToken,
+                refreshToken,
+            });
+        } catch (error) {
+            throw new Error(`Unable to generate new access token: \n ${error}`);
+        }
     }
-});
+);
+
 export default authenticationRouter;
