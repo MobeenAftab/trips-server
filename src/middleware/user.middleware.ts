@@ -12,8 +12,6 @@ export const checkIfUserExists = async (
         if (user) {
             return res.status(303).json({
                 msg: 'Account with that email already exists',
-                id: user._id,
-                user: user,
             });
         } else {
             next();

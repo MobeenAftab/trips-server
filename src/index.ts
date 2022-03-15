@@ -41,15 +41,19 @@ app.set('trust proxy', 1);
 // import routes
 app.use('/api', router);
 
-connectToMongodb()
-    .then(() => {
-        // start express server
-        app.listen(PORT, () => {
-            console.log(`Express is listening at ${HOST}:${PORT}`);
-        }).on('SIGTERM', () => {
-            console.debug('SIGTERM signal received: closing HTTP server');
+try {
+    connectToMongodb()
+        .then(() => {
+            // start express server
+            app.listen(PORT, () => {
+                console.log(`Express is listening at ${HOST}:${PORT}`);
+            }).on('SIGTERM', () => {
+                console.debug('SIGTERM signal received: closing HTTP server');
+            });
+        })
+        .catch((error) => {
+            Promise.reject(error);
         });
-    })
-    .catch((error) => {
-        throw new Error(error);
-    });
+} catch (error) {
+    throw new Error(error);
+}

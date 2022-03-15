@@ -17,8 +17,15 @@ router.get('/status', (req, res) => {
     }
 });
 
-router.use('/user', userRouter);
-router.use('/trip', tripRouter);
+/**
+ * Routes with no guards.
+ */
 router.use('/authentication', authenticationRouter);
+
+/**
+ * Protected Routes.
+ */
+router.use('/trip', tripRouter);
+router.use('/user', userRouter);
 
 export default router;
