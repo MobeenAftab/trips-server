@@ -69,3 +69,23 @@ Automated unit and e2e testing coming soon.
 -   [ ] Some CRUD operations can be refactored into a generic controller over the trip and user models.
 -   [ ] Add query parameters to search for trips and users.
 -   [ ] Add routes for admins to remove permission roles from users.
+
+# Testing
+
+## Testing Strategy
+
+## What To Test
+
+References
+
+Testing
+
+-   https://www.sisense.com/blog/rest-api-testing-strategy-what-exactly-should-you-test/
+-   https://www.360logica.com/blog/sneak-peek-test-framework-test-pyramid-testing-pyramid/
+-   [Types of API tests](https://www.code-intelligence.com/rest-api-testing#Types-of-REST-APIs)
+-   https://www.testim.io/blog/unit-test-rest-api/
+
+REST API
+
+-   [REST API Guide](https://restfulapi.net/resource-naming/)
+-   https://hackernoon.com/restful-api-designing-guidelines-the-best-practices-60e1d954e7c9
