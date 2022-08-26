@@ -55,6 +55,6 @@
         "express": "^4.17.3",
         "express-rate-limit": "^6.3.0",
         "jsonwebtoken": "^8.5.1",
-        "mongoose": "^6.2.3"
+        "mongoose": "^6.4.6"
     }
 }
